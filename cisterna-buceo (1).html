@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Limpieza AquaBuceo — Lavado de Cisternas por Buceo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #e8f4fd;
+    --aqua: #a8d8ea;
+    --deep: #1a6b8a;
+    --teal: #2e9caa;
+    --foam: #f0fafc;
+    --sand: #faf7f2;
+    --stone: #4a6270;
+    --ink: #1c2e38;
+    --gold: #c9a84c;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--foam);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 6%;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(168,216,234,0.3);
+    animation: fadeDown 0.8s ease both;
+  }
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:none; } }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--deep);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--teal); font-style: italic; }
+
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+  nav ul a {
+    text-decoration: none;
+    color: var(--stone);
+    font-size: 0.88rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  nav ul a:hover { color: var(--teal); }
+
+  .nav-cta {
+    background: var(--deep);
+    color: var(--white) !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 50px;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--teal) !important; color: white !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 6% 6rem;
+    background: linear-gradient(135deg, var(--foam) 0%, var(--sky) 100%);
+    position: relative; z-index: 2;
+    animation: fadeLeft 1s 0.3s ease both;
+  }
+  @keyframes fadeLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:none; } }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(46,156,170,0.12);
+    border: 1px solid rgba(46,156,170,0.3);
+    color: var(--teal);
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 0.4rem 1rem; border-radius: 50px;
+    margin-bottom: 1.8rem; width: fit-content;
+  }
+  .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    letter-spacing: -1px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--teal);
+    display: block;
+  }
+
+  .hero p {
+    font-size: 1.05rem; line-height: 1.75;
+    color: var(--stone);
+    max-width: 440px;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--deep);
+    color: var(--white);
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.25s;
+    box-shadow: 0 8px 24px rgba(26,107,138,0.25);
+  }
+  .btn-primary:hover { background: var(--teal); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(46,156,170,0.35); }
+
+  .btn-ghost {
+    border: 1.5px solid var(--deep);
+    color: var(--deep);
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.25s;
+  }
+  .btn-ghost:hover { background: var(--deep); color: white; }
+
+  .hero-right {
+    position: relative; overflow: hidden;
+    animation: fadeRight 1s 0.5s ease both;
+  }
+  @keyframes fadeRight { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:none; } }
+
+  /* mosaic of photos */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 100%; gap: 4px;
+  }
+  .photo-grid .p1 { grid-column: 1; grid-row: 1 / 3; }
+  .photo-grid .p2 { grid-column: 2; grid-row: 1; }
+  .photo-grid .p3 { grid-column: 2; grid-row: 2; }
+
+  .photo-grid div {
+    overflow: hidden; position: relative;
+    background: var(--aqua);
+  }
+  .photo-grid img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .photo-grid div:hover img { transform: scale(1.06); }
+
+  /* ── STATS ── */
+  .stats-bar {
+    background: var(--deep);
+    display: flex; justify-content: center; gap: 0; flex-wrap: wrap;
+  }
+  .stat {
+    padding: 2rem 3.5rem;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    flex: 1; min-width: 180px;
+    animation: countUp 0.8s ease both;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem; color: var(--aqua);
+    line-height: 1; margin-bottom: 0.3rem;
+  }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── ABOUT / PROCESO ── */
+  section { padding: 7rem 6%; }
+
+  .section-tag {
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1.2; color: var(--ink);
+    max-width: 560px; margin-bottom: 1.2rem;
+  }
+  .section-sub {
+    color: var(--stone); font-size: 1rem; line-height: 1.8; font-weight: 300;
+    max-width: 520px; margin-bottom: 3rem;
+  }
+
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+  }
+  .about-image-wrap {
+    position: relative; border-radius: 24px; overflow: hidden;
+    box-shadow: 0 30px 60px rgba(26,107,138,0.15);
+  }
+  .about-image-wrap img { width: 100%; height: 480px; object-fit: cover; display: block; }
+  .about-badge {
+    position: absolute; bottom: 2rem; left: 2rem;
+    background: white; border-radius: 16px; padding: 1rem 1.4rem;
+    display: flex; align-items: center; gap: 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .about-badge-icon { font-size: 2rem; }
+  .about-badge-text { font-size: 0.75rem; color: var(--stone); }
+  .about-badge-text strong { display: block; font-size: 1rem; color: var(--ink); }
+
+  /* steps */
+  .steps { display: flex; flex-direction: column; gap: 1.5rem; }
+  .step {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    padding: 1.2rem; border-radius: 16px;
+    background: white;
+    box-shadow: 0 2px 12px rgba(26,107,138,0.06);
+    border: 1px solid rgba(168,216,234,0.4);
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: default;
+  }
+  .step:hover { transform: translateX(6px); box-shadow: 0 8px 24px rgba(46,156,170,0.12); }
+  .step-num {
+    min-width: 42px; height: 42px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--teal), var(--deep));
+    color: white; font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
+  }
+  .step h4 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.2rem; color: var(--ink); }
+  .step p { font-size: 0.85rem; color: var(--stone); line-height: 1.5; font-weight: 300; }
+
+  /* ── GALLERY ── */
+  .gallery-section { background: var(--sand); }
+  .gallery-header { text-align: center; margin-bottom: 3.5rem; }
+  .gallery-header .section-title { margin: 0 auto 1rem; }
+  .gallery-header .section-sub { margin: 0 auto; text-align: center; }
+
+  .gallery-mosaic {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 240px 240px;
+    gap: 12px;
+  }
+  .gp { border-radius: 16px; overflow: hidden; position: relative; }
+  .gp img { width:100%; height:100%; object-fit:cover; transition: transform 0.5s ease; }
+  .gp:hover img { transform: scale(1.08); }
+  .gp:hover .gp-overlay { opacity: 1; }
+  .gp-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,107,138,0.7) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.3s;
+    display: flex; align-items: flex-end; padding: 1.2rem;
+    color: white; font-size: 0.85rem; font-weight: 500;
+  }
+
+  .gp1 { grid-column: 1 / 6; grid-row: 1; }
+  .gp2 { grid-column: 6 / 9; grid-row: 1; }
+  .gp3 { grid-column: 9 / 13; grid-row: 1; }
+  .gp4 { grid-column: 1 / 5; grid-row: 2; }
+  .gp5 { grid-column: 5 / 9; grid-row: 2; }
+  .gp6 { grid-column: 9 / 13; grid-row: 2; }
+
+  /* ── SERVICES ── */
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .service-card {
+    background: white; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(26,107,138,0.07);
+    border: 1px solid rgba(168,216,234,0.3);
+    transition: all 0.3s;
+  }
+  .service-card:hover { transform: translateY(-8px); box-shadow: 0 16px 40px rgba(46,156,170,0.15); }
+  .service-img { height: 200px; overflow: hidden; }
+  .service-img img { width:100%; height:100%; object-fit:cover; transition: transform 0.5s; }
+  .service-card:hover .service-img img { transform: scale(1.1); }
+  .service-body { padding: 1.6rem; }
+  .service-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+  .service-body h3 { font-size: 1.1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.5rem; }
+  .service-body p { font-size: 0.88rem; color: var(--stone); line-height: 1.6; font-weight: 300; }
+  .service-tag {
+    display: inline-block; margin-top: 1rem;
+    background: var(--sky); color: var(--teal);
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 1px;
+    padding: 0.25rem 0.75rem; border-radius: 50px;
+    text-transform: uppercase;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section { background: var(--sky); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .tcard {
+    background: white; border-radius: 20px; padding: 1.8rem;
+    box-shadow: 0 4px 20px rgba(26,107,138,0.06);
+    position: relative; overflow: hidden;
+  }
+  .tcard::before {
+    content: '"';
+    position: absolute; top: -0.5rem; right: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem; color: var(--sky); line-height: 1;
+    pointer-events: none;
+  }
+  .stars { color: var(--gold); font-size: 0.9rem; margin-bottom: 1rem; }
+  .tcard p { font-size: 0.92rem; color: var(--stone); line-height: 1.7; margin-bottom: 1.2rem; font-weight: 300; }
+  .tcard-author { display: flex; align-items: center; gap: 0.8rem; }
+  .tcard-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--aqua), var(--teal));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 0.9rem;
+  }
+  .tcard-name { font-weight: 500; font-size: 0.9rem; color: var(--ink); }
+  .tcard-role { font-size: 0.78rem; color: var(--stone); }
+
+  /* ── CTA BANNER ── */
+  .cta-section {
+    background: linear-gradient(135deg, var(--deep) 0%, var(--teal) 100%);
+    padding: 6rem 6%;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: white; margin-bottom: 1rem;
+    position: relative;
+  }
+  .cta-section p { color: rgba(255,255,255,0.75); font-size: 1.05rem; margin-bottom: 2.5rem; position: relative; }
+  .cta-section .btn-white {
+    background: white; color: var(--deep);
+    padding: 1rem 2.5rem; border-radius: 50px;
+    text-decoration: none; font-weight: 600;
+    transition: all 0.25s; position: relative;
+    display: inline-block;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+  .cta-section .btn-white:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(0,0,0,0.25); }
+
+  /* wave decoration */
+  .wave { width: 100%; line-height: 0; }
+  .wave svg { display: block; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.6);
+    padding: 3rem 6% 2rem;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; margin-bottom: 2.5rem; }
+  .footer-brand .logo { color: white; font-size: 1.4rem; margin-bottom: 0.8rem; display: block; }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.7; max-width: 280px; }
+  .footer-col h4 { color: white; font-size: 0.85rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .footer-col ul a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+  .footer-col ul a:hover { color: var(--aqua); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.78rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-right { height: 55vw; }
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .services-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .gallery-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gp1,.gp2,.gp3,.gp4,.gp5,.gp6 { grid-column: auto; grid-row: auto; height: 180px; }
+    .footer-grid { grid-template-columns: 1fr; }
+    nav ul { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="logo">Aqua<span>Buceo</span></div>
+  <ul>
+    <li><a href="#proceso">Proceso</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#contacto" class="nav-cta">Contactar</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">Servicio Profesional Certificado</div>
+    <h1>Cisternas Limpias,<br><em>Agua Pura.</em></h1>
+    <p>Especialistas en lavado y desinfección de cisternas mediante técnicas de buceo profesional. Limpieza profunda sin vaciado total, con los más altos estándares sanitarios.</p>
+    <div class="hero-btns">
+      <a href="#contacto" class="btn-primary">Solicitar cotización</a>
+      <a href="#proceso" class="btn-ghost">Ver proceso</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="photo-grid">
+      <div class="p1">
+        <img src="https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=600&q=80" alt="Agua cristalina">
+      </div>
+      <div class="p2">
+        <img src="https://images.unsplash.com/photo-1439405326854-014607f694d7?w=500&q=80" alt="Agua pura azul">
+      </div>
+      <div class="p3">
+        <img src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=500&q=80" alt="Limpieza profesional">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">+2,400</div>
+    <div class="stat-label">Cisternas Saneadas</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">15+</div>
+    <div class="stat-label">Años de Experiencia</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Sin Vaciado Total</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">24h</div>
+    <div class="stat-label">Respuesta Garantizada</div>
+  </div>
+</div>
+
+<!-- ── PROCESO ── -->
+<section id="proceso">
+  <div class="about-grid">
+    <div class="about-image-wrap">
+      <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=700&q=80" alt="Técnico especialista en agua">
+      <div class="about-badge">
+        <div class="about-badge-icon">🤿</div>
+        <div class="about-badge-text">
+          <strong>Buceo Certificado</strong>
+          Técnica especializada de limpieza
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-tag">¿Por qué buceo?</div>
+      <h2 class="section-title">La forma más efectiva y segura de limpiar</h2>
+      <p class="section-sub">El lavado por buceo permite una limpieza profunda y exhaustiva sin interrumpir el suministro de agua. Nuestros buzos certificados acceden al interior de la cisterna para eliminar sedimentos, biofilm y contaminantes en su origen.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h4>Inspección inicial y diagnóstico</h4>
+            <p>Evaluación del estado sanitario de la cisterna mediante cámara subacuática antes de iniciar el trabajo.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h4>Remoción de sedimentos por buceo</h4>
+            <p>El buzo extrae manualmente los sólidos depositados en el fondo y paredes sin drenar el agua.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h4>Cepillado y lavado de superficies</h4>
+            <p>Limpieza mecánica de paredes y fondo para eliminar biofilm, algas y depósitos minerales.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <h4>Desinfección y análisis de agua</h4>
+            <p>Aplicación de desinfectantes aprobados y toma de muestra para análisis microbiológico final.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALERÍA ── -->
+<section class="gallery-section" id="galeria">
+  <div class="gallery-header">
+    <div class="section-tag">Galería de trabajos</div>
+    <h2 class="section-title">Resultados que hablan por sí solos</h2>
+    <p class="section-sub">Cada cisterna intervenida recibe el mismo nivel de cuidado y precisión profesional.</p>
+  </div>
+
+  <div class="gallery-mosaic">
+    <div class="gp gp1">
+      <img src="https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=80" alt="Agua limpia">
+      <div class="gp-overlay">Antes & Después</div>
+    </div>
+    <div class="gp gp2">
+      <img src="https://images.unsplash.com/photo-1523362628745-0c100150b504?w=500&q=80" alt="Inspección">
+      <div class="gp-overlay">Inspección HD</div>
+    </div>
+    <div class="gp gp3">
+      <img src="https://images.unsplash.com/photo-1468413253980-6f0d7a4a7f4c?w=500&q=80" alt="Agua cristalina">
+      <div class="gp-overlay">Equipo certificado</div>
+    </div>
+    <div class="gp gp4">
+      <img src="https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=500&q=80" alt="Agua purificada">
+      <div class="gp-overlay">Agua cristalina</div>
+    </div>
+    <div class="gp gp5">
+      <img src="https://images.unsplash.com/photo-1563089145-e6f71e5bc6b4?w=500&q=80" alt="Tanque industrial">
+      <div class="gp-overlay">Cisternas industriales</div>
+    </div>
+    <div class="gp gp6">
+      <img src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=500&q=80" alt="Resultado final">
+      <div class="gp-overlay">Resultado final</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICIOS ── -->
+<section id="servicios">
+  <div style="text-align:center; margin-bottom:3.5rem;">
+    <div class="section-tag">Nuestros servicios</div>
+    <h2 class="section-title" style="margin:0 auto 1rem;">Soluciones para cada necesidad</h2>
+    <p class="section-sub" style="margin:0 auto;">Adaptamos nuestro servicio a cisternas residenciales, comerciales e industriales.</p>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-img">
+        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&q=80" alt="Residencial">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">🏠</div>
+        <h3>Cisternas Residenciales</h3>
+        <p>Para casas habitación y edificios de apartamentos. Proceso ágil con mínima interrupción al suministro de agua.</p>
+        <span class="service-tag">Desde 1 a 50 m³</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-img">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80" alt="Comercial">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">🏢</div>
+        <h3>Uso Comercial e Institucional</h3>
+        <p>Hoteles, hospitales, centros comerciales y escuelas. Cumplimiento normativo y certificación sanitaria incluida.</p>
+        <span class="service-tag">50 a 500 m³</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-img">
+        <img src="https://images.unsplash.com/photo-1565008576549-57569a49371d?w=500&q=80" alt="Industrial">
+      </div>
+      <div class="service-body">
+        <div class="service-icon">🏭</div>
+        <h3>Grandes Depósitos Industriales</h3>
+        <p>Tanques de gran volumen en plantas industriales y complejos agroindustriales. Equipos especializados y brigadas de buceo.</p>
+        <span class="service-tag">+500 m³</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testimonials-section">
+  <div style="text-align:center; margin-bottom:3.5rem;">
+    <div class="section-tag">Testimonios</div>
+    <h2 class="section-title" style="margin:0 auto;">Lo que dicen nuestros clientes</h2>
+  </div>
+
+  <div class="testimonials-grid">
+    <div class="tcard">
+      <div class="stars">★★★★★</div>
+      <p>Excelente servicio. Llegaron puntual, trabajaron de forma muy profesional y el resultado fue impecable. El análisis del agua salió con todos los parámetros en orden.</p>
+      <div class="tcard-author">
+        <div class="tcard-avatar">MR</div>
+        <div>
+          <div class="tcard-name">Marco Ríos</div>
+          <div class="tcard-role">Administrador — Residencial Los Pinos</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="stars">★★★★★</div>
+      <p>Trabajamos con AquaBuceo desde hace tres años para el mantenimiento de las cisternas de nuestro hotel. Nunca hemos tenido un problema de calidad de agua. Los recomiendo ampliamente.</p>
+      <div class="tcard-author">
+        <div class="tcard-avatar">AL</div>
+        <div>
+          <div class="tcard-name">Ana Lozano</div>
+          <div class="tcard-role">Gerente — Hotel Grand Azul</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tcard">
+      <div class="stars">★★★★★</div>
+      <p>La técnica de buceo hace una diferencia enorme. Antes vaciábamos la cisterna completa y tardábamos días. Ahora el proceso se hace en horas y sin cortar el suministro. Increíble.</p>
+      <div class="tcard-author">
+        <div class="tcard-avatar">JV</div>
+        <div>
+          <div class="tcard-name">Jorge Vargas</div>
+          <div class="tcard-role">Director de Mantenimiento — Planta Vitafresh</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section" id="contacto">
+  <h2>¿Lista tu cisterna para una limpieza profunda?</h2>
+  <p>Solicita una inspección gratuita hoy. Respondemos en menos de 24 horas.</p>
+  <a href="tel:+521234567890" class="btn-white">📞 Llamar ahora: (55) 1234-5678</a>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">Aqua<span>Buceo</span></span>
+      <p>Especialistas en limpieza y desinfección de cisternas por buceo profesional. Más de 15 años garantizando la calidad de su agua en la CDMX y Área Metropolitana.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <ul>
+        <li><a href="#">Cisternas residenciales</a></li>
+        <li><a href="#">Uso comercial</a></li>
+        <li><a href="#">Industrial</a></li>
+        <li><a href="#">Análisis de agua</a></li>
+        <li><a href="#">Mantenimiento preventivo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="#">📍 CDMX y Área Metropolitana</a></li>
+        <li><a href="#">📞 (55) 1234-5678</a></li>
+        <li><a href="mailto:aquabuceo@gmail.com">✉️ aquabuceo@gmail.com</a></li>
+        <li><a href="#">🕐 Lun–Sáb, 7am–7pm</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Limpieza AquaBuceo. Todos los derechos reservados.</span>
+    <span>CDMX y Área Metropolitana</span>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.service-card, .tcard, .step, .gp').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Stat counter animation
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const text = el.textContent;
+    const num = parseFloat(text.replace(/[^0-9.]/g, ''));
+    const prefix = text.match(/[^0-9.]*/)[0];
+    const suffix = text.replace(/^[^0-9.]*[0-9.]+/, '');
+    if (!isNaN(num)) {
+      let start = 0;
+      const step = num / 60;
+      const timer = setInterval(() => {
+        start = Math.min(start + step, num);
+        el.textContent = prefix + (Number.isInteger(num) ? Math.round(start) : start.toFixed(1)) + suffix;
+        if (start >= num) clearInterval(timer);
+      }, 20);
+    }
+  });
+</script>
+</body>
+</html>
